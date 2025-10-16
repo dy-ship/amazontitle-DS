@@ -30,7 +30,7 @@ export default function App(){
 
   async function onGenerate(){
     setErr('');
-    const required = ['name','node','color','size_or_volume','capacity','weight'];
+    const required = ['name'];
     for(const k of required){ if(!form[k]){ setErr('请填写：'+k); return; } }
     setLoading(true);
     try{
