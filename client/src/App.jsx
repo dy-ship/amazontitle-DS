@@ -42,7 +42,6 @@ export default function App(){
   }
 
   async function onRegenerate(){
-    // 与生成相同的参数再次调用（B 功能）
     await onGenerate();
   }
 
@@ -63,7 +62,6 @@ export default function App(){
     }));
   }
 
-  // 简易 CSV 解析（逗号分隔，不支持复杂带引号场景；够用可直接上）
   function parseCSV(text){
     const lines = text.split(/\r?\n/).filter(Boolean);
     if(lines.length < 2) return [];
@@ -72,7 +70,6 @@ export default function App(){
       const parts = line.split(',').map(s => s.trim());
       const obj = {};
       header.forEach((h,i) => obj[h] = parts[i] || '');
-      // 默认值
       if(!obj.locale) obj.locale = form.locale;
       if(!obj.model) obj.model = form.model;
       return obj;
@@ -92,7 +89,6 @@ export default function App(){
       });
       const data = await res.json();
       if(!res.ok) throw new Error(JSON.stringify(data));
-      // 展示最后一条的结果到右侧
       const lastOk = [...data.results].reverse().find(x => x.ok);
       if(lastOk) setOut(lastOk.output);
       setHist(await history(10));
@@ -102,20 +98,20 @@ export default function App(){
   }
 
   async function onTranslate(){
-  setErr('');
-  if(!out.title || !(out.bullets||[]).length){ setErr('请先生成内容'); return; }
-  try{
-    const res = await translate(target, out.title, out.bullets||[]);
-    setTOut(res);
-  }catch(e){ setErr(e.message); }
-}
+    setErr('');
+    if(!out.title || !(out.bullets||[]).length){ setErr('请先生成内容'); return; }
+    try{
+      const res = await translate(target, out.title, out.bullets||[]);
+      setTOut(res);
+    }catch(e){ setErr(e.message); }
+  }
 
   useEffect(() => { history(10).then(setHist).catch(()=>{}); fetchPresets(); }, []);
 
   return (
     <div style={{ fontFamily:'system-ui', padding:20, maxWidth:1100, margin:'0 auto' }}>
-      <h2>🛒 DeepSeek · 亚马逊标题 & 五点生成（全栈·交互增强 ABP）</h2>
-      <p style={{ color:'#6b7280' }}>A: 类目模板 · B: 重新生成 · P: 批量 CSV</p>
+      <h2>🛒 DeepSeek · 亚马逊标题 & 五点生成（全栈·交互增强 ABPT）</h2>
+      <p style={{ color:'#6b7280' }}>A: 类目模板 · B: 重新生成 · P: 批量 CSV · T: 多语言翻译</p>
 
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
         <Card>
@@ -165,7 +161,7 @@ export default function App(){
           <label style={{marginTop:8}}>五点（每行一条）</label>
           <textarea rows={10} style={ta} value={(out.bullets||[]).join('\n')} onChange={e=>setOut(o=>({...o, bullets:e.target.value.split('\n')}))} />
           <div style={{ display:'flex', gap:8, marginTop:8 }}>
-            <button style={btnAlt} onClick={()=>navigator.clipboard.writeText(`TITLE:\n${out.title}\n\nBULLETS:\n${(out.bullets||[]).join('\n')}`)}>📋 复制</button>
+            <button style={btnAlt} onClick={()=>navigator.clipboard.writeText(`TITLE:\\n${out.title}\\n\\nBULLETS:\\n${(out.bullets||[]).join('\\n')}`)}>📋 复制</button>
             <button style={btnAlt} onClick={()=>{
               const blob = new Blob([JSON.stringify(out,null,2)], {type:'application/json'});
               const url = URL.createObjectURL(blob); const a=document.createElement('a');
@@ -176,36 +172,36 @@ export default function App(){
       </div>
 
       <Card>
-  <h3>多语言翻译</h3>
-  <Row>
-    <Select label="目标语言/站点" value={target} onChange={(e)=>setTarget(e.target.value)} options={{
-      DE_de:'DE / Deutsch', JP_ja:'JP / 日本語', US_en:'US / English', UK_en:'UK / English', CN_zh:'CN / 中文'
-    }} />
-    <div style={{ display:'flex', alignItems:'end' }}>
-      <button style={btn} onClick={onTranslate}>🌐 翻译当前结果</button>
-    </div>
-  </Row>
-  <label>标题（翻译后）</label>
-  <textarea rows={3} style={ta} value={tOut.title} onChange={e=>setTOut(o=>({...o, title:e.target.value}))} />
-  <label style={{marginTop:8}}>五点（翻译后，每行一条）</label>
-  <textarea rows={10} style={ta} value={(tOut.bullets||[]).join('\n')} onChange={e=>setTOut(o=>({...o, bullets:e.target.value.split('\n')}))} />
-  <div style={{ display:'flex', gap:8, marginTop:8 }}>
-    <button style={btnAlt} onClick={()=>navigator.clipboard.writeText(`TITLE:\n${tOut.title}\n\nBULLETS:\n${(tOut.bullets||[]).join('\n')}`)}>📋 复制翻译</button>
-    <button style={btnAlt} onClick={()=>{
-      const blob = new Blob([JSON.stringify(tOut,null,2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob); const a=document.createElement('a');
-      a.href=url; a.download='amazon_copy_translated.json'; a.click(); URL.revokeObjectURL(url);
-    }}>⬇️ 下载翻译 JSON</button>
-  </div>
-</Card>
+        <h3>多语言翻译</h3>
+        <Row>
+          <Select label="目标语言/站点" value={target} onChange={(e)=>setTarget(e.target.value)} options={{
+            DE_de:'DE / Deutsch', JP_ja:'JP / 日本語', US_en:'US / English', UK_en:'UK / English', CN_zh:'CN / 中文'
+          }} />
+          <div style={{ display:'flex', alignItems:'end' }}>
+            <button style={btn} onClick={onTranslate}>🌐 翻译当前结果</button>
+          </div>
+        </Row>
+        <label>标题（翻译后）</label>
+        <textarea rows={3} style={ta} value={tOut.title} onChange={e=>setTOut(o=>({...o, title:e.target.value}))} />
+        <label style={{marginTop:8}}>五点（翻译后，每行一条）</label>
+        <textarea rows={10} style={ta} value={(tOut.bullets||[]).join('\n')} onChange={e=>setTOut(o=>({...o, bullets:e.target.value.split('\n')}))} />
+        <div style={{ display:'flex', gap:8, marginTop:8 }}>
+          <button style={btnAlt} onClick={()=>navigator.clipboard.writeText(`TITLE:\\n${tOut.title}\\n\\nBULLETS:\\n${(tOut.bullets||[]).join('\\n')}`)}>📋 复制翻译</button>
+          <button style={btnAlt} onClick={()=>{
+            const blob = new Blob([JSON.stringify(tOut,null,2)], {type:'application/json'});
+            const url = URL.createObjectURL(blob); const a=document.createElement('a');
+            a.href=url; a.download='amazon_copy_translated.json'; a.click(); URL.revokeObjectURL(url);
+          }}>⬇️ 下载翻译 JSON</button>
+        </div>
+      </Card>
 
-<Card>
+      <Card>
         <h3>批量 CSV 生成（P）</h3>
         <p style={{ color:'#6b7280' }}>CSV 头（必须）: <code>name,node,color,size_or_volume,capacity,weight,material,brand,locale,model</code></p>
         <textarea rows={6} style={ta} value={batchCSV} onChange={e=>setBatchCSV(e.target.value)} />
         <div style={{ display:'flex', gap:8, marginTop:8 }}>
           <button disabled={loading} onClick={onBatchGenerate} style={btn}>⚡ 开始批量</button>
-          <button style={btnAlt} onClick={()=>setBatchCSV('name,node,color,size_or_volume,capacity,weight,material,brand,locale,model\n')}>🧹 清空</button>
+          <button style={btnAlt} onClick={()=>setBatchCSV('name,node,color,size_or_volume,capacity,weight,material,brand,locale,model\\n')}>🧹 清空</button>
         </div>
       </Card>
 
@@ -235,27 +231,45 @@ export default function App(){
   );
 }
 
-function Card({children}){
-  return <div style={{ border:'1px solid #e5e7eb', borderRadius:12, padding:16, marginBottom:12 }}>{children}</div>
+function Card({children}) {
+  return <div style={{ border:'1px solid #e5e7eb', borderRadius:12, padding:16, marginBottom:12 }}>{children}</div>;
 }
-function Row({children}){
-  return <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>{children}</div>
+function Row({children}) {
+  return <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>{children}</div>;
 }
-function Input({label, ...rest}){
-  return (<div>
-    <label style={{ fontSize:12, color:'#6b7280' }}>{label}</label>
-    <input {...rest} style={inp}/>
-  </div>)
+function Input({label, ...rest}) {
+  return (<div><label style={{ fontSize:12, color:'#6b7280' }}>{label}</label><input {...rest} style={inp}/></div>);
 }
-function Select({label, value, onChange, options}){
-  return (<div>
-    <label style={{ fontSize:12, color:'#6b7280' }}>{label}</label>
-    <select value={value} onChange={onChange} style={inp}>
-      {Object.entries(options).map(([v,l]) => <option key={v} value={v}>{l}</option>)}
-    </select>
-  </div>)
+function Select({label, value, onChange, options}) {
+  return (<div><label style={{ fontSize:12, color:'#6b7280' }}>{label}</label><select value={value} onChange={onChange} style={inp}>{Object.entries(options).map(([v,l]) => <option key={v} value={v}>{l}</option>)}</select></div>);
 }
+
 const inp = { width:'100%', padding:'10px', border:'1px solid #e5e7eb', borderRadius:10 };
 const ta = { ...inp, width:'100%' };
 const btn = { padding:'10px 14px', borderRadius:10, border:'1px solid #111827', background:'#111827', color:'#fff', cursor:'pointer' };
 const btnAlt = { padding:'10px 14px', borderRadius:10, border:'1px solid #111827', background:'#fff', color:'#111827', cursor:'pointer' };
+
+function Th({children}) {
+  return (
+    <th style={{
+      textAlign:'left',
+      padding:'8px 6px',
+      borderBottom:'1px solid #e5e7eb',
+      fontWeight:600,
+      fontSize:12,
+      color:'#6b7280'
+    }}>{children}</th>
+  );
+}
+
+function Td({children, ...rest}) {
+  return (
+    <td {...rest} style={{
+      padding:'8px 6px',
+      borderBottom:'1px solid #f3f4f6',
+      fontSize:13,
+      color:'#111827',
+      verticalAlign:'top'
+    }}>{children}</td>
+  );
+}
