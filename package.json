@@ -1,20 +1,10 @@
 {
   "name": "amazontitl-DS",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
+  "workspaces": ["client", "server"],
+  "engines": { "node": ">=18" },
   "scripts": {
     "build": "npm --prefix client install && npm --prefix client run build",
-    "start": "npm --prefix server install && node server/server.js"
-  }
-}
-{
-  "build": {
-    "builder": "nodejs",
-    "installCommand": "npm install --legacy-peer-deps",
-    "buildCommand": "npm run build",
-    "startCommand": "npm start"
+    "start": "node server/server.js"
   }
 }
