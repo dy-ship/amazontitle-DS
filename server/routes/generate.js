@@ -6,11 +6,11 @@ const InputSchema = z.object({
   locale: z.enum(['US_en','UK_en','DE_de','JP_ja','CN_zh']),
   model: z.enum(['deepseek-chat','deepseek-reasoner']).default('deepseek-chat'),
   name: z.string().min(1),
-  node: z.string().min(1),
-  color: z.string().min(1),
-  size_or_volume: z.string().min(1),
-  capacity: z.string().min(1),
-  weight: z.string().min(1),
+  node: z.string().optional().nullable().default(''),
+  color: z.string().optional().nullable().default(''),
+  size_or_volume: z.string().optional().nullable().default(''),
+  capacity: z.string().optional().nullable().default(''),
+  weight: z.string().optional().nullable().default(''),
   material: z.string().optional().nullable(),
   brand: z.string().optional().nullable()
 });
