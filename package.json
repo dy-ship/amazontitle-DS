@@ -1,0 +1,13 @@
+{
+  "name": "amazontitl-DS",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "postinstall": "npm --prefix client ci && npm --prefix server ci",
+    "build": "npm --prefix client run build",
+    "start": "node server/server.js"
+  }
+}
