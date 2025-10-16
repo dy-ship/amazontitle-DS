@@ -10,3 +10,11 @@
     "start": "npm --prefix server install && node server/server.js"
   }
 }
+{
+  "build": {
+    "builder": "nodejs",
+    "installCommand": "npm install --legacy-peer-deps",
+    "buildCommand": "npm run build",
+    "startCommand": "npm start"
+  }
+}
