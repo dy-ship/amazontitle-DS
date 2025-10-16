@@ -6,8 +6,7 @@
     "server"
   ],
   "scripts": {
-    "postinstall": "npm --prefix client ci && npm --prefix server ci",
-    "build": "npm --prefix client run build",
-    "start": "node server/server.js"
+    "build": "npm --prefix client install && npm --prefix client run build",
+    "start": "npm --prefix server install && node server/server.js"
   }
 }
